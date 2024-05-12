@@ -50,5 +50,5 @@ const appDescription = ref(config.public.appDescription);
 const isLoading = ref(true);
 setTimeout(() => {
     isLoading.value = false;
-}, 1000);
+}, 300);
 </script>

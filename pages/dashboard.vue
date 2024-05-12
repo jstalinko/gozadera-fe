@@ -118,7 +118,7 @@
                         </div>
                     </div>
                     <div class="col-xs-3">
-                        <div class="card rounded" @click="navigateTo('/rsvp')">
+                        <div class="card rounded" @click="navigateTo('/outlets')">
                             <div class="card-body bg-gozadera rounded text-white">
                                 <i class="material-icons vm md-24 text-template">calendar_month</i>
                                 <br>
@@ -140,68 +140,68 @@
                 <h3 class="subtitle text-white mb-4">Special Offers</h3>
                 <div class="row justify-content-between">
                     <div class="col-6 mb-3">
-                        <div class="card overflow-hidden shadow-gozadera">
+                        <div class="card overflow-hidden shadow-gozadera" @click="navigateTo('/offers/event')" >
                                 <div class="background" style="background-image: url('/img/event/kanan.jpeg');">
                                     <img src="/img/event/kanan.jpeg" alt="" style="display: none;">
                                 </div>
                                 <div class="card-body py-4 text-white border">
                                   <div class="border rounded m-2 p-2 background-text">
-                                    <h3 class="font-weight-normal">Events</h3>
+                                    <h5 class="font-weight-normal">Events</h5>
                                     <p class="text-mute">
                                         Upto 70% off
                                     </p>
-                                    <a href="" class="btn btn-sm btn-default rounded mt-3">Show Now</a>
+                                    <NuxtLink to="/offers/event" class="btn btn-sm btn-default rounded mt-3">Show Now</NuxtLink>
                                   </div>
                                 </div>
                             </div>
                             
                     </div>
                     <div class="col-6 mb-3">
-                        <div class="card overflow-hidden shadow-gozadera">
+                        <div class="card overflow-hidden shadow-gozadera" @click="navigateTo('/offers/everyday')" >
                                 <div class="background" style="background-image: url('/img/event/kanan.jpeg');">
                                     <img src="/img/event/kanan.jpeg" alt="" style="display: none;">
                                 </div>
                                 <div class="card-body py-4 text-white border">
                                   <div class="border rounded m-2 p-2 background-text">
-                                    <h3 class="font-weight-normal">Everyday</h3>
+                                    <h5 class="font-weight-normal">Everyday</h5>
                                     <p class="text-mute">
                                         Everyday promo
                                     </p>
-                                    <a href="" class="btn btn-sm btn-default rounded mt-3">Show Now</a>
+                                    <NuxtLink to="/offers/everyday" class="btn btn-sm btn-default rounded mt-3">Show Now</NuxtLink>
                                   </div>
                                 </div>
                             </div>
                             
                     </div>
                     <div class="col-6 mb-3">
-                        <div class="card overflow-hidden shadow-gozadera">
+                        <div class="card overflow-hidden shadow-gozadera" @click="navigateTo('/offers/weekday')" >
                                 <div class="background" style="background-image: url('/img/event/kanan.jpeg');">
                                     <img src="/img/event/kanan.jpeg" alt="" style="display: none;">
                                 </div>
                                 <div class="card-body py-4 text-white border">
                                   <div class="border rounded m-2 p-2 background-text">
-                                    <h3 class="font-weight-normal">Weekday</h3>
+                                    <h5 class="font-weight-normal">Weekday</h5>
                                     <p class="text-mute">
                                         Weekday promo
                                     </p>
-                                    <a href="" class="btn btn-sm btn-default rounded mt-3">Show Now</a>
+                                    <NuxtLink to="/offers/weekday" class="btn btn-sm btn-default rounded mt-3">Show Now</NuxtLink>
                                   </div>
                                 </div>
                             </div>
                             
                     </div>
                     <div class="col-6 mb-3">
-                        <div class="card overflow-hidden shadow-gozadera">
+                        <div class="card overflow-hidden shadow-gozadera" @click="navigateTo('/offers/weekend')" >
                                 <div class="background" style="background-image: url('/img/event/kanan.jpeg');">
                                     <img src="/img/event/kanan.jpeg" alt="" style="display: none;">
                                 </div>
                                 <div class="card-body py-4 text-white border">
                                   <div class="border rounded m-2 p-2 background-text">
-                                    <h3 class="font-weight-normal">Weekend</h3>
+                                    <h5 class="font-weight-normal">Weekend</h5>
                                     <p class="text-mute">
-                                        Special Weekend promo2
+                                        Weekend promo
                                     </p>
-                                    <a href="" class="btn btn-sm btn-default rounded mt-3">Show Now</a>
+                                    <NuxtLink to="/offers/weekend" class="btn btn-sm btn-default rounded mt-3">Show Now</NuxtLink>
                                   </div>
                                 </div>
                             </div>

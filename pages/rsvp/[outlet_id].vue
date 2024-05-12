@@ -44,8 +44,11 @@
                     <div class="form-group" v-show="outletTables.length > 0">
                         <label for="tableno">Choose Table Number</label>
                         <div class="btn-group-toggle" data-toggle="buttons">
-                            <label :class="isTableSelected(table.id) ? 'btn btn-outline-default active' : 'btn btn-outline-default'" :id="'tbl'+table.id"  v-for="table in outletTables">
-                                <input type="checkbox" :name="table.code"  @click="addToCart(floorActive , table.id , table)" >
+                            <label
+                                :class="isTableSelected(table.id) ? 'btn btn-outline-default active' : 'btn btn-outline-default'"
+                                :id="'tbl' + table.id" v-for="table in outletTables">
+                                <input type="checkbox" :name="table.code"
+                                    @click="addToCart(floorActive, table.id, table)">
                                 {{ table.code }}
                             </label>
 
@@ -62,19 +65,21 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                   <ul class="list-group">
-                       <li class="list-group-item d-flex justify-content-between bg-transparent text-white" style="border:0px;border-radius:0px;border-bottom:1px solid grey;" v-for="cart in carts">
-                           <b class="align-self">
-                                 {{ numberify(cart.floor) }} <small>Floor</small> - {{ cart.table }} - {{ cart.max_pax }} pax - {{ currencyFormat(cart.price) }}
-                               </b>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between bg-transparent text-white"
+                            style="border:0px;border-radius:0px;border-bottom:1px solid grey;" v-for="cart in carts">
+                            <b class="align-self">
+                                {{ numberify(cart.floor) }} <small>Floor</small> - {{ cart.table }} - {{ cart.max_pax }}
+                                pax - {{ currencyFormat(cart.price) }}
+                            </b>
                         </li>
-                        </ul>
+                    </ul>
 
-                        <br>
-                        <button class="btn btn-default btn-block rounded" >
-                            <i class="material-icons">send</i> Continue
-                        </button>
-                 </div>
+                    <br>
+                    <button class="btn btn-default btn-block rounded">
+                        <i class="material-icons">send</i> Continue
+                    </button>
+                </div>
 
             </div>
         </div>
@@ -101,23 +106,23 @@ const outletTables = ref([]);
 const floorOutlet = ref([]);
 const floorActive = ref(0);
 
-const addToCart = (floor: number, table: string , data: []) => {
+const addToCart = (floor: number, table: string, data: []) => {
     let item = carts.value.find((item) => item.id == table);
-    if(!item){
-    carts.value.push({
-        id: data.id,
-        floor: floor,
-        table: data.code,
-        price: data.price,
-        max_pax: data.max_pax 
-    });
-    document.getElementById('tbl'+table.id).classList.add('active');
-    }else{
+    if (!item) {
+        carts.value.push({
+            id: data.id,
+            floor: floor,
+            table: data.code,
+            price: data.price,
+            max_pax: data.max_pax
+        });
+
+    } else {
         carts.value = carts.value.filter((item) => item.id != table);
-        document.getElementById('tbl'+table.id).classList.remove('active');
+
     }
 
-    
+
 }
 const isTableSelected = (id: string) => {
     return carts.value.find((item) => item.id == id && item.floor == floorActive.value);
