@@ -19,14 +19,25 @@
 </ul>
 
 <div class="mt-5 container-fluid">
-    <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white" style="border:0px;border-radius:0px;border-bottom:1px solid grey;" v-for="product in products">
-            <b>{{ product?.name }} </b><i>{{ numberSimple(product?.price) }}</i>
-            <button role="button" @click="addToCart(product?.id , product,'add')" v-show="!isProductInCart(product.id)" class="btn bg-gozadera rounded-circle justify-content-end p-1 float-right">
-                <i class="material-icons">add</i>
-            </button>
-            
-            <div class="input-group justify-content-end" style="width:35%;" v-show="isProductInCart(product.id)">
+    <div class="row mt-4">
+                <div class="col-6 col-md-4 col-lg-3" v-for="product in products">
+                    <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                        <img :src="product.image" :alt="product.name" class="card-img-top">
+                        <div class="card-body ">
+                            
+                            <a href="product.html">
+                                <p class="mb-0 text-white">{{ product.name }}</p>
+                            </a>
+                            <h5 class="mb-0 mt-1">
+                                <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price) }}</span> 
+                            </h5>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <button class="btn btn-block bg-gozadera rounded" @click="addToCart(product.id , product,'add')" v-show="!isProductInCart(product.id)">
+                            <i class="material-icons">shopping_cart</i>
+                            </button>
+
+                            <div class="input-group justify-content-end"  v-show="isProductInCart(product.id)">
                 <div class="input-group-prepend">
                     <button class="btn btn-sm bg-gozadera" type="button" id="button-addon1" @click="addToCart(product.id,product,'remove')">-</button>
                 </div>
@@ -35,10 +46,13 @@
                     <button class="btn btn-sm bg-gozadera" type="button" id="button-addon" @click="addToCart(product.id,product,'add')">+</button>
                 </div>
             </div>
-        </li>
-      
-     
-    </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
 </div>
             </div>
 
@@ -78,22 +92,32 @@
                         </li>
 
                     </ul>
+                    <p class="mt-3 mb-2 text-white">Total : <b>Rp. {{ idrFormat(carts.reduce((acc, item) => acc + (item.price * item.qty), 0)) }}</b></p>
                 </div>
                 <div class="modal-footer">
-                    <!-- table number form -->
                     <div class="input-group mb-3">
-                        <select class="custom-select" id="inputGroupSelect02">
+                        <label class="input-group-text" for="inputGroupSelect01">Outlet</label>
+                        <select class="custom-select" id="inputGroupSelect01" @change="getTableOutlet" v-model="outletId" >
+                            <option selected>Choose Outlet</option>
+                            <option v-for="out in outletz" :value="out.id">{{ out.name }}</option>
+                            
+                            </select>
+                            
+                    </div>
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupSelect02">Table Number</label>
+                        
+                        <select class="custom-select" id="inputGroupSelect02" v-model="tableId">
                             <option selected>Table Number</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option v-for="tab in tablez" :value="tab.id" >
+                            {{ numberify(tab.floor) }} Floor - Table No :  {{  tab.code }} 
+                            </option>
+                           
                         </select>
                     </div>
 
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-default">Order</button>
+                    <button type="button" @click="prepareOrder" class="btn btn-default">Order</button>
                 </div>
             </div>
         </div>
@@ -113,6 +137,36 @@ const carts = useCart();
 
 const categoryActive = ref('');
 const products = ref([]);
+const outletz = ref([]);
+const tablez = ref([]);
+const outletId = ref(0);
+const tableId = ref(0);
+
+
+const prepareOrder = async() => {
+    const response = await $fetch('/api/order-product', {
+        method: 'POST',
+        body: {
+            token: useCookie('token').value,
+            outlet_id: outletId.value,
+            table_id: tableId.value,
+            member_id: useUser().value.id,
+            items: carts.value
+        }
+    });
+
+    if(response.status == 'success')
+    {
+        carts.value = [];
+        outletId.value = 0;
+        tableId.value = 0;
+        const router = useRouter();
+        router.push('/thanks?ref=restaurant');
+    }else{
+         alert('Failed to order');
+         window.location.reload();
+    }
+}
 
 const addToCart = (id , product,action) => {
     let item = carts.value.find(product => product?.id == id)
@@ -152,9 +206,41 @@ const getProduct = async (type: string) => {
     categoryActive.value = type;
     products.value = prod?.data;
 }
-onMounted(() => {
-    getProduct('food');
-});
+const getOutlets = async () => {
+    isLoading.value = true;
+    const outlets = await $fetch('/api/outlets', {
+        method: 'POST',
+        body: {
+            token: useCookie('token').value
+        }
+    });
+    if(outlets.status == 'error') {
+        console.log(outlets);
+        return;
+    }else{
+        outletz.value = outlets.data;
+    }
+    isLoading.value = false;
+}
+
+const getTableOutlet = async () => {
+    isLoading.value = true;
+    const id = outletId.value;
+    const tables = await $fetch('/api/outlet/tables-only', {
+        method: 'POST',
+        body: {
+            token: useCookie('token').value,
+            outlet_id: id
+        }
+    });
+    if(tables.status == 'error') {
+        console.log(tables);
+        return;
+    }else{
+        tablez.value = tables.data;
+    }
+    isLoading.value = false;
+}
 
 const numberSimple = (num: number) => {
     // simpletify to K
@@ -163,6 +249,14 @@ const numberSimple = (num: number) => {
         // change . to ,
         return total.toFixed(2).toString().replace(".", ",") + " K";
     }
-
 }
+
+onMounted(async () => {
+    isLoading.value = true;
+    await getProduct('food');
+    await getOutlets();
+    isLoading.value = false;
+});
+
+
 </script>

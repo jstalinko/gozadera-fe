@@ -5,8 +5,8 @@
 
         
 
-        <div class="container container-fluid mb-5">
-            <h3 class="text-white border text-center mt-3 mb-4 rounded-pill"> {{ route.params.category.toUpperCase() }} </h3>
+        <div class="container container-fluid mb-4">
+            <h3 class="text-white border text-center mt-3 mb-4 rounded-pill"> ALL EVENTS </h3>
 
             <ul class="nav nav-pills nav-fill">
                 <li class="nav-item" >
@@ -14,10 +14,6 @@
                 </li>
                 <li class="nav-item" >
                     <a :class="(isNav == 'ongoing') ? 'nav-link active' : 'nav-link'" role="button" @click="changeNav('ongoing')">On Going</a>
-                </li>
-                <li class="nav-item">
-                    <a :class="(isNav == 'finished') ? 'nav-link active' : 'nav-link'" 
-                        role="button" @click="changeNav('finished')">Finished</a>
                 </li>
 
             </ul>
@@ -33,7 +29,9 @@
                     <div class="card bg-dark text-white shadow" >
                         <img :src="imageUrl(p.image)" class="card-img-top" :alt="p.name">
                         <div class="card-body">
-                            <h5 class="card-title">{{ p.name }}</h5>
+                            <h5 class="card-title">{{ p.name }}
+                                <span class="badge badge-success p-2 rounded-pill float-right">{{ p.type.toUpperCase() }}</span>
+                                </h5>
                             <p class="card-text">
                                 <span> <i class="material-icons">calendar_today</i> {{ humanifyDate(p.start_date) }} - {{ humanifyDate(p.end_date) }}</span>
                             </p>
@@ -43,9 +41,9 @@
                             <NuxtLink :to="'/rsvp/'+p.outlet_id+'?startDate='+p.start_date+'&endDate='+p.end_date" class="btn btn-default btn-block" v-show="p.status !== 'finished'">
                                 <i class="material-icons">calendar_month</i> RSVP 
                             </NuxtLink>
-                            <NuxtLink  :to="'/gallery/'+p.id" class="btn btn-danger btn-block" v-show="p.status == 'finished'">
+                            <a href="#" class="btn btn-danger btn-block" v-show="p.status == 'finished'">
                                 <i class="material-icons">image</i> Gallery
-                            </NuxtLink>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -77,7 +75,7 @@ const getEvents = async () => {
     {
         method: 'POST',
         body:{
-            category: route.params.category,
+            category: null,
             token: useCookie('token').value
         }
     });

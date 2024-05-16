@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="form-group float-label active">
                                     <input type="text" class="form-control text-white" v-model="user.email">
-                                    <label class="form-control-label text-white">Username/Email</label>
+                                    <label class="form-control-label text-white">Email</label>
                                 </div>
                                 <div class="form-group float-label position-relative">
                                     <input type="password" class="form-control text-white" v-model="user.password">
@@ -73,6 +73,8 @@
 
 
 <script setup lang="ts">
+import qrcode from '~/plugins/qrcode';
+
 
 definePageMeta({
     title: 'Login',
@@ -113,6 +115,7 @@ const login = async () => {
         {
             const token = useCookie('token');
             const users = useCookie('user');
+            
             users.value = JSON.stringify({
                 id: body.member.id,
                 name: body.member.username,
@@ -121,6 +124,8 @@ const login = async () => {
                 image: body.member.image,
                 point: body.member.point,
                 phone: body.member.phone,
+                qrcode: body.qrcode,
+                address: body.member.address
             });
             token.value = body.token;
             isLogin.value = 'success';
@@ -150,7 +155,7 @@ const login = async () => {
     
     isLoading.value = false;
     isLogin.value = 'error';
-    errorMsg.value = 'Email or password is incorrect';
+    errorMsg.value = 'Server error,please try again later !';
 }
 
 

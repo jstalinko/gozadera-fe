@@ -3,10 +3,10 @@
  <header class="header">
             <div class="row">
                 <div class="col-auto px-0">
-                    <button class="menu-btn btn btn-40 btn-link back-btn" type="button" @click="$router.back()">
-                        <span class="material-icons">keyboard_arrow_left</span>
+                    <button class="menu-btn btn btn-40 btn-link back-btn" type="button" @click="navigateTo('/dashboard')">
+                        <span class="material-icons">home</span>
                     </button>
-                    <span class="text-white" @click="$router.back()">Back</span>
+                    <span class="text-white" @click="navigateTo('/dashboard')">Home</span>
                 </div>
                
 

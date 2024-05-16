@@ -17,8 +17,8 @@
                 </div>
                 <div class="col-auto">
                     <a href="/scanqr" :class="(activeMenu == 'scanqr') ? 'active' : ''">
-                        <i class="material-icons">qr_code_scanner</i>
-                        <p>Scan QR</p>
+                        <i class="material-icons">qr_code_2</i>
+                        <p>My QR</p>
                     </a>
                 </div>
                 <div class="col-auto">

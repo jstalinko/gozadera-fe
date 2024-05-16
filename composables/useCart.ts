@@ -1,3 +1,3 @@
 export const useCart = () => {
-      return useState('carts', () => [] as Record<string, unknown>[]);
+      return useState('carts', () => [] );
   }

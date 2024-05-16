@@ -4,16 +4,19 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "@vuepic/vue-datepicker": "^8.6.0",
     "nuxt": "^3.11.2",
     "pinia": "^2.1.7",
+    "v-calendar": "^3.1.2",
     "vue": "^3.4.27",
+    "vue-qrcode-reader": "^5.5.4",
     "vue-router": "^4.3.2"
   }
 }

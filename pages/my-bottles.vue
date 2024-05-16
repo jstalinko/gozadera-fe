@@ -7,6 +7,10 @@
                 My Saved Bottles
             </h3>
             <div class="table-responsive mt-3">
+                    <div v-if="bottles.length == 0" class="alert alert-warning" role="alert">
+                        No bottles found
+                    </div>
+                    <div v-else>
                             <table class="table text-white border ">
                                 <thead class="bg-gozadera">
                                     <tr>
@@ -18,23 +22,36 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr v-for="bottle in bottles">
                                         <th scope="row">1</th>
-                                        <td>Gozadera Sby</td>
                                         <td>
-                                            (x2) Wine 
+                                            {{ bottle.outlet.name }}
                                         </td>
                                         <td>
-                                            <span class="badge bg-success">Saved</span>
+                                            (x{{ bottle.qty }}) {{ bottle.product.name }} 
                                         </td>
                                         <td>
-                                            Bottle saved for 2 weeks
+                                            <div v-if="bottle.status == 'saved'">
+                                                <span class="badge bg-success">
+                                                    {{ bottle.status }}
+                                                </span>
+                                            </div>
+                                            <div v-else>
+                                                <span class="badge bg-primary">
+                                                    {{ bottle.status }}
+                                                </span>
+                                                </div>
+                                            
+                                        </td>
+                                        <td>
+                                            {{ bottle.note }}
                                         </td>
                                     </tr>
                                    
                                 </tbody>
                             </table>
                         </div>
+                    </div>
         </div>
 
 
@@ -57,4 +74,34 @@ definePageMeta({
 const config = useRuntimeConfig();
 const appName = ref(config.public.appName);
 const appDescription = ref(config.public.appDescription);
+const isLoading = ref(true);
+const bottles = ref([]);
+setTimeout(() => {
+    isLoading.value = false;
+}, 200);
+
+const myBottles = async () => {
+    isLoading.value = true;
+    const body = await $fetch(`/api/my-bottles`,
+    {
+        method: 'POST',
+        body:{
+            token: useCookie('token').value,
+            memberId: useUser().value.id
+        }
+    
+    });
+
+    if(body.status == 'success' ){
+        bottles.value = body.data;
+    }else{
+        bottles.value = [];
+    }
+    isLoading.value = false;
+
+    console.log(body.data);
+};
+onMounted(async () => {
+   await myBottles();
+});
 </script>

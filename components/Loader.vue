@@ -7,7 +7,7 @@
                     <div class="icon icon-100 mb-4 rounded-circle">
                         <img src="/img/banteng_gold_no_bg.png" alt="" class="w-100">
                     </div>
-                    <h4 class="text-default">
+                    <h4 class="text-white">
                         {{ appName }}
                     </h4>
                     <p class="text-secondary">

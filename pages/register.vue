@@ -16,7 +16,7 @@
 
                 </div>
                 <div class="ml-auto col-auto align-self-center">
-                    <a href="signup.html" class="text-white">
+                    <a role="button"  class="text-white" @click="navigateTo('/login')">
                         Sign In
                     </a>
                 </div>

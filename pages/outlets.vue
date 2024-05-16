@@ -48,7 +48,7 @@
                             Private Room <span v-if="out.private_room == 1">Available</span> <span v-else>Not Available</span>
                         </span>
 
-                        <NuxtLink class="btn btn-default float-right" :to="'/rsvp/'+out.id">
+                        <NuxtLink class="btn btn-default float-right" :to="'/rsvp/'+out.id+'?startDate='+minDate+'&endDate='+maxDate">
                             <i class="material-icons">calendar_month</i> RSVP</NuxtLink>
                     </div>
                 </div>
@@ -75,6 +75,11 @@ const appName = ref(config.public.appName);
 const appDescription = ref(config.public.appDescription);
 const isLoading = ref(true);
 const outletz = ref([]);
+
+// dateNow Hours min sec
+const dateNow = new Date();
+const minDate = dateNow.toISOString().split('T')[0] + ' 00:00:00';
+const maxDate = new Date(dateNow.setDate(dateNow.getDate() + 60)).toISOString().split('T')[0] + ' 23:59:59';
 
 const OutLets = async() => {
     let tokenValue = useCookie('token');
