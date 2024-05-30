@@ -13,15 +13,7 @@ export const idrFormat = (value: number) => {
   );
 };
 
-export const Banners = async (token: string) => {
-  const response = await $fetch(`/api/banners`, {
-    method: "POST",
-    body: {
-      token: token,
-    },
-  });
-  return response;
-};
+
 
 export const member = () => {
   const user = useUser();

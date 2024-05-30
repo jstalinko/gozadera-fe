@@ -113,7 +113,7 @@ const register =async () => {
     }catch(e){
 
         isLoading.value = false;
-        console.log(e);
+        isRegister.value = 'error';
     }
 }
 

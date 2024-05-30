@@ -19,10 +19,35 @@
             <div class="alert alert-success mt-4" v-show="isRedeem">
                 {{ message }}
             </div>
+            <br>
+            <ul class="nav nav-pills nav-fill">
+                <li class="nav-item">
+                    <a :class="(catActive == 'all') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' "  @click="catActive = 'all'" href="#" role="button">All</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(catActive == 'food') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' " @click="catActive = 'food'" href="#" role="button">Food</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(catActive == 'drink') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' " @click="catActive = 'drink'" href="#" role="button">Drink</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(catActive == 'lifestyle') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' " @click="catActive = 'lifestyle'" href="#" role="button">Lifestyle</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(catActive == 'merchandise') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' " @click="catActive = 'merchandise'" href="#" role="button">Merchandise</a>
+                </li>
+            
+                <li class="nav-item">
+                    <a :class="(catActive == 'other') ? 'nav-link active rounded-pill' : 'nav-link rounded-pill' " @click="catActive = 'other'" href="#" role="button">Others</a>
+                </li>
+            
+
+            </ul>
+
             <div class="row mt-4" v-show="tabActive == 'product'">
                 <div class="col-6 col-md-4 col-lg-3" v-for="re in redeemables" v-show="re.stock > 0">
                     <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
-                        <img :src="re.product.image" class="card-img-top">
+                        <img :src="imageUrl(re.product.image)" class="card-img-top">
 
                         <div class="card-body ">
 
@@ -96,6 +121,7 @@ const config = useRuntimeConfig();
 const appName = ref(config.public.appName);
 const appDescription = ref(config.public.appDescription);
 const tabActive = ref('product');
+const catActive = ref('all');
 const isLoading = ref(true);
 const redeemables = ref([]);
 const redeemHistories = ref([]);
@@ -103,6 +129,12 @@ const user = useUser();
 const userPoint = ref(user.value.point);
 const isRedeem = ref(false);
 const message = ref('');
+
+watch(catActive , (val) => {
+    fetchRedeemables();
+});
+
+
 const redeem = async (id: int , product_id: int) => {
     isLoading.value = true;
     const token = useCookie('token').value;
@@ -140,7 +172,12 @@ const fetchRedeemables = async () => {
         }
     });
 
-    redeemables.value = body.data;
+    if(catActive.value == 'all') {
+        redeemables.value = body.data;
+    }else{
+        redeemables.value = body.data.filter((re) => re.category == catActive.value);
+    
+    }
     isLoading.value = false;
     console.log(body);
 

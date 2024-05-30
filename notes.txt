@@ -1,0 +1,13 @@
+•⁠  ⁠[ ] Konek pemesanan melalui qr 
+•⁠  ⁠[ ] Member di scan ke raptor untuk member 
+•⁠  ⁠[OK] Point per 1 juta 10 point / 0,01% 
+•⁠  ⁠[OK] Profile bisa ganti foto 
+•⁠  ⁠[OK] Di depan padasaat login bisa update story sebelum masuk ke apps nya 
+•⁠  ⁠[ ] Setting harga per event naik parameter jam 
+•⁠  ⁠[OK] Hilangkan kranjang belanja dan check out 
+•⁠  ⁠[OK] Redem point sesuai dengan kategori (food, lifestyle dll) 
+•⁠  ⁠[ ] Minta list isi redem point dan list jumlah poin
+•⁠  ⁠[OK] Untuk point di buatkan point dia di paling bawah 
+•⁠  ⁠[ ] Buatkan reservasi bisa di ubah oleh marketing dan resepsionis saja 
+•⁠  ⁠[ ] Rsvp grouping per jenis meja (misal A baru masuk A1 A2 A3) 
+•⁠  ⁠[ ] Menu outlet ganti warna background hitam dan tulisan putih

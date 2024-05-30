@@ -7,7 +7,7 @@
         <div class="carousel-inner">
 
           <div v-for="(ban, index) in banners" :key="index"
-            :class="index == 0 ? 'carousel-item active' : 'carousel-item'">
+            :class="index == 0 ? 'carousel-item active' : 'carousel-item'" @click="navigateTo(ban.link)">
 
             <img class="img-thumbnail-gozadera  shadow-gozadera" :src="imageUrl(ban.image)" :alt="ban.description">
           </div>

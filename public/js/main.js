@@ -3,7 +3,12 @@
 $(document).ready(function () {
     
     
-    
+    var swiperx = new Swiper('.introduction', {
+        autoplay: true,
+        pagination: {
+            el: '.swiper-pagination',
+        },
+    });
 
     var swiper = new Swiper(".mySwiper", {
         slidesPerView: 1,

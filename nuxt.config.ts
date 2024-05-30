@@ -4,8 +4,8 @@ export default defineNuxtConfig({
     public: {
       appName: process.env.APP_NAME || "Mobile Gozadera",
       appDescription: process.env.APP_DESCRIPTION || "The next generation club",
-      apiUrl: process.env.API_URL || "http://localhost:8000/api",
-      baseUrl: process.env.BASE_URL || "http://localhost:3000",
+      apiUrl: process.env.API_URL || "https://gozadera-backend.fotografersukasuka.com/api",
+      baseUrl: process.env.BASE_URL || "https://gozadera-mobile.fotografersukasuka.com",
     },
   },
 
@@ -94,7 +94,6 @@ export default defineNuxtConfig({
   },
 
   modules: ["@pinia/nuxt"],
-  plugins: ["~/plugins/qrcode"],
   build: {
     transpile: ["@vuepic/vue-datepicker"],
   },

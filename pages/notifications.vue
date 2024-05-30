@@ -22,16 +22,30 @@
                                         <div class="col pl-0">
                                             <div class="row mb-1">
                                                 <div class="col">
-                                                    <p class="mb-0">ORDER #{{ or.id }}</p>
+                                                    <p class="mb-0">ORDER #{{ or.id }} </p>
+
                                                 </div>
                                                 <div class="col-auto pl-0">
                                                     <p class="small text-white">{{ new Date(or.created_at
                                                     ).toLocaleString() }}</p>
+
+
+                                                </div>
+
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col">
+                                                    <span class="badge badge-pill badge-warning p-2"
+                                                        v-show="or.status == 'process'">{{ or.status }}</span>
+                                                    <span class="badge badge-pill  badge-success p-2"
+                                                        v-show="or.status == 'delivered'">{{ or.status }}</span>
+                                                </div>
+                                                <div class="col-auto pl-0">
+                                                    <p class="small text-white">
+                                                        {{ JSON.parse(or.items).length }} items
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <p class="small text-white">
-                                                {{ JSON.parse(or.items).length }} items
-                                            </p>
                                         </div>
                                     </div>
                                 </a>
@@ -39,9 +53,10 @@
                                 <div class="collapse" :id="'order' + or.id">
                                     <div class="card-body">
                                         <li v-for="it in JSON.parse(or.items)">
-                                        (x{{ it.qty }}) {{ it.name }} - Rp. {{ idrFormat(it.price) }} 
+                                            (x{{ it.qty }}) {{ it.name }} - Rp. {{ idrFormat(it.price) }}
                                         </li>
-                                        <span class="badge badge-pill badge-info p-2 mt-2">Total : Rp. {{ idrFormat(or.subtotal) }}</span>
+                                        <span class="badge badge-pill badge-info p-2 mt-2">Total : Rp. {{
+                                            idrFormat(or.subtotal) }}</span>
                                     </div>
                                 </div>
 
@@ -49,12 +64,12 @@
                             </div>
                         </div>
                     </div>
-                    </div>
-
                 </div>
+
             </div>
-            <FooterMenu activeMenu="''" />
         </div>
+        <FooterMenu activeMenu="''" />
+    </div>
 </template>
 
 <script setup lang="ts">

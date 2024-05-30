@@ -39,11 +39,9 @@
                     </div>
                     <div class="text-right col align-self-center">
                         <!-- notification -->
-                        <button class="btn btn-default text-white" @click="navigateTo('/notifications')">
+                        <!-- <button class="btn btn-default text-white" @click="navigateTo('/notifications')">
                             <span class="material-icons">shopping_cart</span>
-                            <!-- badge -->
-                            <!-- <span class="badge badge-danger badge-pill">3</span> -->
-                        </button>
+                        </button> -->
                         <button class="btn btn-link text-danger" @click="logout">
                             <span class="material-icons">logout</span>
                         </button>
@@ -118,7 +116,7 @@
                         </div>
                     </div>
                     <div class="col-xs-3">
-                        <div class="card rounded" @click="navigateTo('/rsvp-event')">
+                        <div class="card rounded" @click="navigateTo('/outlets')">
                             <div class="card-body bg-gozadera rounded text-white">
                                 <i class="material-icons vm md-24 text-template">calendar_month</i>
                                 <br>
@@ -227,11 +225,12 @@
                         </div>
                         <div class="card-body px-0 pt-0">
                             <div class="list-group list-group-flush border-top border-color ">
-                                <li class="list-group-item bg-gozadera-gradient border rounded-pill p-2 w-90 mb-1 mt-1 m-1"
+                                <div v-show="spenders.length > 0 ">
+                                    <li class="list-group-item bg-gozadera-gradient border rounded-pill p-2 w-90 mb-1 mt-1 m-1"
                                     v-for="(spend, index) in spenders">
                                     <span class="float-left text-white">
                                         <h6><span class="border-right bg-secondary text-white p-2 rounded-circle">{{
-                                                index+1 }} .</span> {{ spend.username }}</h6>
+                                            index + 1 }} .</span> {{ spend.username }}</h6>
                                     </span>
                                     <span class="p-2">
                                         {{ currencyFormat(spend.total_payment) }}
@@ -241,6 +240,13 @@
                                         {{ spend.level }}
                                     </span>
                                 </li>
+                            </div>
+                            <div v-show="spenders.length == 0">
+                                <h3 class="text-center"> 
+                                    No data
+                                </h3>
+                                </div>
+
 
 
                             </div>
@@ -292,28 +298,39 @@ definePageMeta({
 
 
 const topSpender = async () => {
-    const response = await $fetch('/api/top-spender');
-    if (response.status == 'success') {
-        spenders.value = response.data;
-    } else {
+    try {
+        const response = await $fetch('/api/top-spender');
+        if (response.status == 'success') {
+            spenders.value = response.data;
+        } else {
+            spenders.value = [];
+        }
+    } catch (e) {
         spenders.value = [];
     }
-}
-const myBottles = async () => {
-    const user = useCookie('user');
-    const response = await $fetch('/api/my-bottles', {
-        method: 'POST',
-        body: {
-            token: useCookie('token').value,
-            memberId: user.value.id
-        }
-    });
 
-    if (response.status == 'success') {
-        countMyBottle.value = response.data.length;
-    } else {
+}
+
+const myBottles = async () => {
+    try {
+        const user = useCookie('user');
+        const response = await $fetch('/api/my-bottles', {
+            method: 'POST',
+            body: {
+                token: useCookie('token').value,
+                memberId: user.value.id
+            }
+        });
+
+        if (response.status == 'success') {
+            countMyBottle.value = response.data.length;
+        } else {
+            countMyBottle.value = 0;
+        }
+    } catch (e) {
         countMyBottle.value = 0;
     }
+
 }
 
 const getProfile = async () => {
@@ -339,19 +356,29 @@ const getProfile = async () => {
         userPoint.value = body.data.point;
     }
 }
-
-onMounted(async () => {
-    await topSpender();
-    await myBottles();
-    await getProfile();
-    const token = useCookie('token').value;
-    let bannerResponse = await Banners(token);
-    if (bannerResponse.status == 'success') {
-        banners.value = bannerResponse.data;
-
+const Banners = async () => {
+    const token = useCookie('token').value
+    const response = await $fetch(`/api/banners`, {
+        method: "POST",
+        body: {
+            token: token,
+        },
+    });
+    if (response.status == 'success') {
+        banners.value = response.data;
     } else {
         banners.value = [];
     }
+
+}
+
+onMounted(async () => {
+
+    await Banners();
+    await topSpender();
+    await myBottles();
+    await getProfile();
+
 
 });
 

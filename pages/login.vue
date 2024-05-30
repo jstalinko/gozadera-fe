@@ -73,7 +73,6 @@
 
 
 <script setup lang="ts">
-import qrcode from '~/plugins/qrcode';
 
 
 definePageMeta({

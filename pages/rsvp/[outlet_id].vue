@@ -123,8 +123,8 @@
                         </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-default" @click="prepareForRsvp">No thanks</button>
-                        <button type="button" class="btn btn-default">Yes , I want !</button>
+                        <button type="button" class="btn btn-outline-default" @click="prepareForRsvp(false)">No thanks</button>
+                        <button type="button" class="btn btn-default" @click="prepareForRsvp(true)">Yes , I want !</button>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@ const addToCart = (floor: number, table: string, data: []) => {
     console.log(carts.value);
 };
 
-const prepareForRsvp = async () => {
+const prepareForRsvp = async (toMenu) => {
     const token = useCookie("token").value;
     const outlet_id = route.params.outlet_id;
     const id = useUser().value.id;
@@ -194,7 +194,12 @@ const prepareForRsvp = async () => {
 
     if(body.status == 'success')
     {
+       if(toMenu)
+       {
+        return navigateTo('/thanks?ref=rsvp&then=restaurant');
+       }else{
         return navigateTo('/thanks?ref=rsvp');
+       }
     }else{
         return ;
     }
@@ -215,6 +220,7 @@ const selectFloor = async (floor: number) => {
             token: token.value,
             outlet_id: id,
             floor: floor,
+            rsvp_date: selectDate.value,
         },
     });
 
@@ -238,6 +244,7 @@ const getFloor = async () => {
         body: {
             token: token.value,
             outlet_id: id,
+            rsvp_date: selectDate.value,
         },
     });
 

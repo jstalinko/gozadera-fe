@@ -1,127 +1,337 @@
 <template>
     <div>
-        <Loader :appName="appName" :appDescription="appDescription" :isLoading="isLoading" /> 
-        
+        <Loader :appName="appName" :appDescription="appDescription" :isLoading="isLoading" />
+
         <Header />
-            <div class="container mt-5">
-                <h3 class="text-white mb-2" >Menu</h3>
-                <ul class="nav nav-pills nav-fill">
-  <li class="nav-item">
-    <a :class="(categoryActive == 'food' || categoryActive =='') ?  'nav-link active' : 'nav-link'"   href="#" role="button" @click="getProduct('food')">Food</a>
-  </li>
-  <li class="nav-item">
-    <a :class="(categoryActive == 'beverages') ?  'nav-link active' : 'nav-link'" href="#" role="button" @click="getProduct('beverages')">Beverages</a>
-  </li>
-  <li class="nav-item">
-    <a :class="(categoryActive == 'alcohol' ) ?  'nav-link active' : 'nav-link'" href="#" role="button" @click="getProduct('alcohol')">Liquor</a>
-  </li>
-  
-</ul>
+        <div class="container mt-5">
+            <h3 class="text-white mb-2">Menu</h3>
+            <ul class="nav nav-pills nav-fill">
+                <li class="nav-item">
+                    <a :class="(categoryActive == 'food' || categoryActive == '') ? 'nav-link active' : 'nav-link'"
+                        href="#" role="button" @click="getProduct('food')">Food</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(categoryActive == 'beverages') ? 'nav-link active' : 'nav-link'" href="#" role="button"
+                        @click="getProduct('beverages')">Beverages</a>
+                </li>
+                <li class="nav-item">
+                    <a :class="(categoryActive == 'alcohol') ? 'nav-link active' : 'nav-link'" href="#" role="button"
+                        @click="getProduct('alcohol')">Liquor</a>
+                </li>
 
-<div class="mt-5 container-fluid">
-    <div class="row mt-4">
-                <div class="col-6 col-md-4 col-lg-3" v-for="product in products">
-                    <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
-                        <img :src="product.image" :alt="product.name" class="card-img-top">
-                        <div class="card-body ">
-                            
-                            <a href="product.html">
-                                <p class="mb-0 text-white">{{ product.name }}</p>
-                            </a>
-                            <h5 class="mb-0 mt-1">
-                                <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price) }}</span> 
-                            </h5>
+            </ul>
+            <div class="mt-5 container-fluid" v-show="categoryActive !== 'food' ">
+               
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'starter')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                            <!-- <div class="card-footer bg-transparent border-0">
+                                <button class="btn btn-block bg-gozadera rounded"
+                                    @click="addToCart(product.id, product, 'add')"
+                                    v-show="!isProductInCart(product.id)">
+                                    <i class="material-icons">shopping_cart</i>
+                                </button>
+
+                                <div class="input-group justify-content-end" v-show="isProductInCart(product.id)">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-sm bg-gozadera" type="button" id="button-addon1"
+                                            @click="addToCart(product.id, product, 'remove')">-</button>
+                                    </div>
+                                    <input type="number" class="form-control" placeholder="Qty" aria-label="Qty"
+                                        aria-describedby="button-addon" :value="isProductQty(product.id)" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm bg-gozadera" type="button" id="button-addon"
+                                            @click="addToCart(product.id, product, 'add')">+</button>
+                                    </div>
+                                </div>
+                            </div> -->
+
                         </div>
-                        <div class="card-footer bg-transparent border-0">
-                            <button class="btn btn-block bg-gozadera rounded" @click="addToCart(product.id , product,'add')" v-show="!isProductInCart(product.id)">
-                            <i class="material-icons">shopping_cart</i>
-                            </button>
+                    </div>
 
-                            <div class="input-group justify-content-end"  v-show="isProductInCart(product.id)">
-                <div class="input-group-prepend">
-                    <button class="btn btn-sm bg-gozadera" type="button" id="button-addon1" @click="addToCart(product.id,product,'remove')">-</button>
                 </div>
-                <input type="number" class="form-control"  placeholder="Qty" aria-label="Qty" aria-describedby="button-addon"  :value="isProductQty(product.id)" readonly>
-                <div class="input-group-append">
-                    <button class="btn btn-sm bg-gozadera" type="button" id="button-addon" @click="addToCart(product.id,product,'add')">+</button>
                 </div>
-            </div>
+
+            <div class="mt-5 container-fluid" v-show="categoryActive == 'food' || categoryActive == ''">
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    STARTER
+                </h5>
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'starter')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                            <!-- <div class="card-footer bg-transparent border-0">
+                                <button class="btn btn-block bg-gozadera rounded"
+                                    @click="addToCart(product.id, product, 'add')"
+                                    v-show="!isProductInCart(product.id)">
+                                    <i class="material-icons">shopping_cart</i>
+                                </button>
+
+                                <div class="input-group justify-content-end" v-show="isProductInCart(product.id)">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-sm bg-gozadera" type="button" id="button-addon1"
+                                            @click="addToCart(product.id, product, 'remove')">-</button>
+                                    </div>
+                                    <input type="number" class="form-control" placeholder="Qty" aria-label="Qty"
+                                        aria-describedby="button-addon" :value="isProductQty(product.id)" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm bg-gozadera" type="button" id="button-addon"
+                                            @click="addToCart(product.id, product, 'add')">+</button>
+                                    </div>
+                                </div>
+                            </div> -->
+
                         </div>
-
                     </div>
+
                 </div>
 
-            </div>
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    MAIN COURSE
+                </h5>
 
-</div>
-            </div>
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'main_course')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
 
-            
-                <a href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button"  class="btn btn-block bg-gozadera rounded mt-5">
-                    <span class="badge badge-light rounded-pill p-2 ">{{ totalQty }}</span>
-                    <i class="material-icons">shopping_cart</i> View Cart
-                </a>
-            
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-lg modal-dialog-centered a" role="document">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title text-gozadera" id="exampleModalCenterTitle">
-                        <i class="material-icons">shopping_cart</i> Cart</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between bg-transparent text-white" style="border:0px;border-radius:0px;border-bottom:1px solid grey;" v-for="product in carts">
-                        
-                            <b class="align-self-start">
-                                x{{ product?.qty }} -  {{ product?.name }}
-                            </b>
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
                             
-                               
-                            
-                            <b class="align-self-center ">
-                                @{{ numberSimple(product?.price) }}
-                            </b>
-                            <b class="align-self-end">
-                                {{ numberSimple(product?.price * product?.qty) }}
-                            </b>
-                        
-                        </li>
 
-                    </ul>
-                    <p class="mt-3 mb-2 text-white">Total : <b>Rp. {{ idrFormat(carts.reduce((acc, item) => acc + (item.price * item.qty), 0)) }}</b></p>
-                </div>
-                <div class="modal-footer">
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect01">Outlet</label>
-                        <select class="custom-select" id="inputGroupSelect01" @change="getTableOutlet" v-model="outletId" >
-                            <option selected>Choose Outlet</option>
-                            <option v-for="out in outletz" :value="out.id">{{ out.name }}</option>
-                            
-                            </select>
-                            
+                        </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="inputGroupSelect02">Table Number</label>
-                        
-                        <select class="custom-select" id="inputGroupSelect02" v-model="tableId">
-                            <option selected>Table Number</option>
-                            <option v-for="tab in tablez" :value="tab.id" >
-                            {{ numberify(tab.floor) }} Floor - Table No :  {{  tab.code }} 
-                            </option>
+
+                </div>
+
+
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    RICE DISH
+                </h5>
+
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'rice_dish')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
                            
-                        </select>
+
+                        </div>
                     </div>
 
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                    <button type="button" @click="prepareOrder" class="btn btn-default">Order</button>
+                </div>
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    PASTA OR NOODLES
+                </h5>
+
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'pasta_or_noodles')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+
+                </div>
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    SOUP
+                </h5>
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'soup')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                           
+
+                        </div>
+                    </div>
+
+                </div>
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    SALAD
+                </h5>
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'salad')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                           
+
+                        </div>
+                    </div>
+
+                </div>
+                <h5 class="text-center text-white rounded-pill border bg-gozadera">
+                    SMALL BITES
+                </h5>
+                <div class="row mt-4">
+                    <div class="col-6 col-md-4 col-lg-3" v-for="product in products.filter(product => product.sub_category == 'small_bites')">
+                        <div class="card border-0 mb-4 overflow-hidden bg-dark text-white">
+                            <img :src="imageUrl(product.image)" :alt="product.name" class="card-img-top">
+                            <div class="card-body ">
+
+                                <a href="#">
+                                    <p class="mb-0 text-white">{{ product.name }}</p>
+                                </a>
+                                <h5 class="mb-0 mt-1">
+                                    <span class="badge badge-light rounded-pill p-2">Rp. {{ idrFormat(product.price)
+                                        }}</span>
+                                </h5>
+                            </div>
+                           
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- <a href="#" data-toggle="modal" data-target="#exampleModalCenter" role="button"
+            class="btn btn-block bg-gozadera rounded mt-5">
+            <span class="badge badge-light rounded-pill p-2 ">{{ totalQty }}</span>
+            <i class="material-icons">shopping_cart</i> View Cart
+        </a> -->
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-lg modal-dialog-centered a" role="document">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-gozadera" id="exampleModalCenterTitle">
+                            <i class="material-icons">shopping_cart</i> Cart
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between bg-transparent text-white"
+                                style="border:0px;border-radius:0px;border-bottom:1px solid grey;"
+                                v-for="product in carts">
+
+                                <b class="align-self-start">
+                                    x{{ product?.qty }} - {{ product?.name }}
+                                </b>
+
+
+
+                                <b class="align-self-center ">
+                                    @{{ numberSimple(product?.price) }}
+                                </b>
+                                <b class="align-self-end">
+                                    {{ numberSimple(product?.price * product?.qty) }}
+                                </b>
+
+                            </li>
+
+                        </ul>
+                        <p class="mt-3 mb-2 text-white">Total : <b>Rp. {{ idrFormat(carts.reduce((acc, item) => acc +
+                            (item.price * item.qty), 0)) }}</b></p>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="inputGroupSelect01">Outlet</label>
+                            <select class="custom-select" id="inputGroupSelect01" @change="getTableOutlet"
+                                v-model="outletId">
+                                <option selected>Choose Outlet</option>
+                                <option v-for="out in outletz" :value="out.id">{{ out.name }}</option>
+
+                            </select>
+
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="inputGroupSelect02">Table Number</label>
+
+                            <select class="custom-select" id="inputGroupSelect02" v-model="tableId">
+                                <option selected>Table Number</option>
+                                <option v-for="tab in tablez" :value="tab.id">
+                                    {{ numberify(tab.floor) }} Floor - Table No : {{ tab.code }}
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="button" @click="prepareOrder" class="btn btn-default">Order</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <FooterMenu activeMenu="''" />
     </div>
 </template>
 
@@ -143,7 +353,7 @@ const outletId = ref(0);
 const tableId = ref(0);
 
 
-const prepareOrder = async() => {
+const prepareOrder = async () => {
     const response = await $fetch('/api/order-product', {
         method: 'POST',
         body: {
@@ -155,45 +365,44 @@ const prepareOrder = async() => {
         }
     });
 
-    if(response.status == 'success')
-    {
+    if (response.status == 'success') {
         carts.value = [];
         outletId.value = 0;
         tableId.value = 0;
         const router = useRouter();
         router.push('/thanks?ref=restaurant');
-    }else{
-         alert('Failed to order');
-         window.location.reload();
+    } else {
+        alert('Failed to order');
+        window.location.reload();
     }
 }
 
-const addToCart = (id , product,action) => {
+const addToCart = (id, product, action) => {
     let item = carts.value.find(product => product?.id == id)
 
-if (!item) {
-    carts.value.push({
-        id: id,
-        name: product.name,
-        price: product.price,
-        qty: 1
-    });
+    if (!item) {
+        carts.value.push({
+            id: id,
+            name: product.name,
+            price: product.price,
+            qty: 1
+        });
 
-} else {
-    if (action == 'add') {
-        item.qty++;
     } else {
-        item.qty--;
-    }
-    
+        if (action == 'add') {
+            item.qty++;
+        } else {
+            item.qty--;
+        }
 
-}
+
+    }
 }
 const isProductInCart = (id) => {
     return carts.value.some(product => product.id == id);
 }
 const isProductQty = (id) => {
-    return isProductInCart(id) ?  carts.value.find(product => product.id == id)?.qty : 0;
+    return isProductInCart(id) ? carts.value.find(product => product.id == id)?.qty : 0;
 }
 const totalQty = computed(() => {
     return carts.value.reduce((acc, item) => acc + item.qty, 0);
@@ -214,10 +423,10 @@ const getOutlets = async () => {
             token: useCookie('token').value
         }
     });
-    if(outlets.status == 'error') {
+    if (outlets.status == 'error') {
         console.log(outlets);
         return;
-    }else{
+    } else {
         outletz.value = outlets.data;
     }
     isLoading.value = false;
@@ -233,10 +442,10 @@ const getTableOutlet = async () => {
             outlet_id: id
         }
     });
-    if(tables.status == 'error') {
+    if (tables.status == 'error') {
         console.log(tables);
         return;
-    }else{
+    } else {
         tablez.value = tables.data;
     }
     isLoading.value = false;

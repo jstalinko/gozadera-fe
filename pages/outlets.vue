@@ -12,7 +12,7 @@
 
                 </p>
             </b>
-            <div class="card mb-4 mt-2 oveflow-hidden" v-for="out in outletz" :key="out.id">
+            <div class="card mb-4 mt-2 oveflow-hidden bg-dark text-white" v-for="out in outletz" :key="out.id">
                     <div class="card-header">
                         <h6 class="subtitle mb-0">
                             {{out.name}}<br>

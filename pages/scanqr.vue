@@ -6,7 +6,7 @@
         
         <div class="container container-fluid">
             <h3 class="text-white">My QR Code</h3>
-            <img :src="qrcode" class="img-fluid img-thumbnail " alt="Scan QR" style="max-width: fit-content;"/>
+            <img :src="qrcode" class="img-fluid " alt="Scan QR" style="width:600px;height:600px;max-width:100%;max-height: 100%;margin:0 auto;"/>
             <div class="text-center">
                 <p class="text-white">Scan this QRCode to check in at the outlet and get account points</p>
             </div>

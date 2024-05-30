@@ -32,11 +32,11 @@
                     <div class="media">
                         <div class="media-body">
                             <div class="p-2">
-                            <h6 class="mb-1 text-default">#{{ ticket.invoice }}</h6>
-                            <div class="text-black">
-                               RSVP DATE : {{ ticket.rsvp_date }}
+                                <h6 class="mb-1 text-default">#{{ ticket.invoice }}</h6>
+                                <div class="text-black">
+                                    RSVP DATE : {{ ticket.rsvp_date }}
+                                </div>
                             </div>
-                        </div>
                             <ul>
                                 <li v-for="outlet in JSON.parse(ticket.outlet_tables)">
                                     {{ outlet.floor }} Floor | Table No : {{ outlet.table }} | Max Pax : {{
@@ -52,6 +52,9 @@
                             <a class="btn btn-outline-default" data-toggle="collapse" :href="'#payment' + ticket.id"
                                 role="button" aria-expanded="false" :aria-controls="'payment' + ticket.id"
                                 v-show="ticket.payment_status !== 'paid'">Payment</a>
+                            <a class="btn btn-outline-default" data-toggle="collapse" :href="'#detail' + ticket.id"
+                                role="button" aria-expanded="false" :aria-controls="'detail' + ticket.id">Show QR CODE</a>
+
                         </div>
 
                         <span class="badge badge-pill badge-danger p-2" v-if="ticket.payment_status == 'unpaid'">{{
@@ -64,21 +67,63 @@
                             ticket.payment_status }}</span>
                     </div>
                 </div>
+                <div class="card-footer collapse" :id="'detail' + ticket.id">
+                    <QRCodeVue3 :value="ticket.invoice" fileExt="png" :width="300" :height="300" :download="true"
+                        myclass="container container-fluid text-center" imgclass="img img-thumbnail"
+                        downloadButton="btn btn-default btn-block"
+                        :downloadOptions="{ name: ticket.invoice, extension: 'png' }" 
+                        :dotsOptions="{type:'square' , color:'#000000'}" 
+                        :cornersDotOptions="{type:'square'}"
+                        :cornersSquareOptions="{ type: 'square', color: '#000000' }"
+                        v-show="ticket.payment_status == 'paid'" />
+                </div>
+
                 <div class="card-footer collapse" :id="'payment' + ticket.id">
 
                     <hr>
                     <h5>{{ ticket.payment_method.toUpperCase() }}</h5>
                     <li v-for="payment in ticket.payments">
 
-                        <span>{{ payment.bank_name }} - <b>{{ payment.account_number }}</b> A/N {{ payment.account_name }}</span>
-                        
+                        <span>{{ payment.bank_name }} - <b>{{ payment.account_number }}</b> A/N {{ payment.account_name
+                            }}</span>
+
                     </li>
                     <hr>
+                    <div v-show="ticket.proof_transfer != null">
+                        <h6>Payment Proof</h6>
+                        <img :src="ticket.proof_transfer?.image" class="img-fluid img-thumbnail img-responsive"
+                            alt="proof transfer">
+                        <br>
+                        <b>
+                            Please wait for the admin to verify your payment
+                        </b>
+                    </div>
+
                     <!-- upload bukti transfer -->
-                    <div class="form-group">
-                        <label for="bukti">Upload Bukti Transfer</label>
+                    <div class="form-group" v-show="ticket.proof_transfer == null">
+                        <label for="bukti">Proof of transfer</label>
+                        <small class="text-muted">Upload your proof of transfer here</small>
+                        <div class="alert alert-danger mt-2" role="alert" :id="'error' + ticket.id"
+                            style="display:none">
+                            <strong>Warning!</strong> File must be an image , jpg, jpeg, png, gif, IMG, HEIC
+                        </div>
+
+                        <div :id="'imgPreview' + ticket.id" style="display: none;" class="text-center">
+
+                        </div>
+                        <br>
+                        <div :id="'progress' + ticket.id" style="display:none">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                    Uploading...</div>
+                            </div>
+                        </div>
+
+                        <br>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputGroupFile01"
+                            <input type="file" accept="image/*" @change="imageUpload($event, ticket.id)"
+                                class="custom-file-input" id="inputGroupFile01"
                                 aria-describedby="inputGroupFileAddon01">
                             <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                         </div>
@@ -96,6 +141,8 @@
 </template>
 
 <script setup lang="ts">
+import QRCodeVue3 from "qrcode-vue3";
+
 definePageMeta({
     title: 'Redeem',
     meta: [
@@ -117,7 +164,52 @@ setTimeout(() => {
 const tickets = ref([]);
 const tables = ref([]);
 const maxPax = ref(0);
-const paymentMethods = ref([]);
+
+const imageUpload = async (e, id) => {
+    var files = e.target.files[0];
+    var imageUrl = URL.createObjectURL(files);
+    document.getElementById('progress' + id).style.display = 'block';
+    // create img tag
+
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif|\.IMG|\.HEIC)$/i;
+    if (!allowedExtensions.exec(files.name)) {
+        document.getElementById('error' + id).style.display = 'block';
+        //document.getElementById('error'+id).innerHTML = 'File must be an image , jpg, jpeg, png, gif, IMG, HEIC';
+        document.getElementById('progress' + id).style.display = 'none';
+        document.getElementById('imgPreview' + id).style.display = 'none';
+        return false;
+    }
+    document.getElementById('error' + id).style.display = 'none';
+    var img = document.createElement('img');
+    img.src = imageUrl;
+    img.style.width = '100%';
+    img.style.height = '100%';
+    var ImgPreview = document.getElementById('imgPreview' + id);
+    ImgPreview.style.display = 'block';
+    ImgPreview.appendChild(img);
+    ImgPreview.className = 'img-fluid img-thumbnail img-responsive';
+
+    var formData = new FormData();
+    formData.append('image', files);
+    formData.append('token', useCookie('token').value);
+    formData.append('rsvp_id', id);
+    const config = useRuntimeConfig();
+    const token = useCookie('token').value;
+    const response = await $fetch(`${config.public.apiUrl}/upload-receipt`, {
+        method: 'POST',
+        headers: {
+
+            Authorization: `Bearer ${token}`
+        },
+        body: formData
+    });
+    if (response.status == 'success') {
+        document.getElementById('progress' + id).style.display = 'none';
+        await getTicket();
+    }
+
+}
+
 
 const getTicket = async () => {
     const body = await $fetch('/api/my-ticket', {
@@ -132,7 +224,7 @@ const getTicket = async () => {
         body.data.forEach((ticket) => {
             const outletTables = JSON.parse(ticket.outlet_tables);
             outletTables.forEach(async (outlet) => {
-                maxPax.value += outlet.max_pax;         
+                maxPax.value += outlet.max_pax;
             });
         });
         console.log(body);
@@ -143,6 +235,12 @@ const getTicket = async () => {
 }
 
 
+
+defineComponent({
+    components: {
+        QRCodeVue3
+    }
+})
 onMounted(async () => {
     await getTicket();
 });
